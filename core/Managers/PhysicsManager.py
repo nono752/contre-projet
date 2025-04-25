@@ -20,4 +20,3 @@ class PhysicManager(arcade.PhysicsEnginePlatformer):
         hit: list[Interactable] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
         for target in hit:
             target.on_hit(self.scene.player)
-          

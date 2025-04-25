@@ -1,9 +1,10 @@
 import arcade
-from TileSystem.Tile import Tile, Category
+from TileSystem.Tile import Category, Tile
 
 class Pawn(Tile):
     '''Classe de base pour tous les objets controllables'''
     def kill(self) -> None: pass
+    def on_hit(self) -> None: pass
     
 class Player(Pawn): 
     speed: int

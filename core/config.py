@@ -1,6 +1,7 @@
 from TileSystem.Tile import TileProperty, Category, Tile
 from GameObjects.Interactable import *
 from GameObjects.Pawn import Player
+from GameObjects.Blob import Blob
 
 ## constantes
 TILE_SIZE = 64
@@ -11,6 +12,6 @@ SYMBOL_MAPPING = {
     "-": TileProperty(":resources:/images/tiles/grassHalf_mid.png", Category.WALL, Tile),
     "x": TileProperty(":resources:/images/tiles/boxCrate_double.png", Category.WALL, Tile),
     "*": TileProperty(":resources:/images/items/coinGold.png", Category.INTERACTABLE, Coin),
-    "o": TileProperty(":resources:/images/enemies/slimeBlue.png", Category.PAWN, Tile),
+    "o": TileProperty(":resources:/images/enemies/slimeBlue.png", Category.PAWN, Blob),
     "£": TileProperty(":resources:/images/tiles/lava.png", Category.INTERACTABLE, Lava),
 }

@@ -1,6 +1,6 @@
 import arcade
 from TileSystem.Tile import Tile, Category
-from GameObjects.Pawn import Pawn
+from .Pawn import Pawn
 
 class Interactable(Tile):
     '''Classe de base pour les objets avec lesquels on peut interragir.'''

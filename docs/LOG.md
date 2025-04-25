@@ -3,7 +3,8 @@
 ## À faire (prochaine étape)
 
 Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour chacune/chacun.
-
+- **Plus généralement**  
+  * LOG doit être plus concis, déplacer partie sur conception dans DESIGN.
 - **semaine 2**  
   * Est-ce qu'aucun test sont vraiment nécessaire pour la semaine 2 ? Si non les faire !
 - **semaine 3**  
@@ -39,19 +40,19 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
 
 ### LOG
 - **Gestion calvier**  
-Au lieu d'assigner directement `change_x = velocity`, on ajoute/soustrait la vitesse lors de l'appui/relachement. 
-L'opposé est appliqué à la touche de déplacement en sens contraire.  
-
-Pour le saut, on utilise les methodes:
-  ```python
-  def enable_multi_jump(allowed_jumps: int) -> None:
-  def can_jump(y_distance: float = 5) -> bool:
-  ```  
-de la classe `arcade.PhysicsEnginePlatformer` pour: en fonction du nombre de saut donné savoir si le joueur peut sauter
+  Au lieu d'assigner directement `change_x = velocity`, on ajoute/soustrait la vitesse lors de l'appui/relachement. 
+  L'opposé est appliqué à la touche de déplacement en sens contraire.
+  
+  Pour le saut, on utilise les methodes:
+    ```python
+    def enable_multi_jump(allowed_jumps: int) -> None:
+    def can_jump(y_distance: float = 5) -> bool:
+    ```
+  de la classe `arcade.PhysicsEnginePlatformer` pour: en fonction du nombre de saut donné savoir si le joueur peut sauter
 
 - **Gestion caméra**  
-On utilise une interpolation linéaire`pour suivre le joueur tant qu'il ne se trouve pas à un point ou le suivre ferait sortir
-la camera de la carte:
+  On utilise une interpolation linéaire`pour suivre le joueur tant qu'il ne se trouve pas à un point ou le suivre ferait sortir
+  la camera de la carte:
   ```python
    def update_camera(self) -> None:
           current_x = self.camera.position[0]
@@ -68,29 +69,31 @@ la camera de la carte:
   ```
 
 - **Ajout readme.md**  
-Ajout premiere version readme qui décrit le programme de manière générale et explique:
-  1. comment cloner et lancer
-  2. les autres commandes uv utiles pour le projet
-  3. le but du jeu, les mécaniques principales et les commandes
+  Ajout premiere version readme qui décrit le programme de manière générale et explique:
+  1. Comment cloner et lancer.
+  2. Les autres commandes uv utiles pour le projet.
+  3. Le but du jeu, les mécaniques principales et les commandes.
 
 - **Tests**  
-Pour l'instant hormis les test du tutoriel, aucun ajout ne semble nécessaire.
+  Pour l'instant hormis les test du tutoriel, aucun ajout ne semble nécessaire.
 
 
 
 ## Semaine 3
 ### taches
 * [ ] Mettre le LOG à jour                                        
-* [ ] Mettre le ANSWER à jour                                        
+* [x] Mettre le ANSWER à jour                                        
 * [X] Pouvoir récuperer carte depuis txt                                    
 * [X] Pouvoir vérifier la carte
 * [X] pouvoir lire la carte et ajouter à la scene les bon sprites
 * [ ] Ajout blob
-* [ ] Ajout lave
+* [x] Ajout lave
+* [x] Séparation logique du joueur dans une classe `Player`
+* [x] Récupération entrées clavier dans une classe `Controller`
  
 ### LOG
 - **Décodage de la carte**  
-Le décodage se fait comme suit:
+  Le décodage se fait comme suit:
   1. `MapLoader` charge les données de la carte sans vérification dans `MapData`:
     ```python
     @dataclass
@@ -98,6 +101,7 @@ Le décodage se fait comme suit:
         '''contient les données de la carte'''
         keys: dict[str, str]
         grid: list[str]
+        path: str
     ```
   2. `MapValidator` valide ou lance un exception.
     Les vérifications sont: un seul point de départ, bonnes dimensions, clés obligatoires et types correspondent.
@@ -118,7 +122,7 @@ Le décodage se fait comme suit:
             self.category = category
     ```
   5. `GameScene` utilise les points précédents charger des cartes en placant les Tiles dans les bonnes `SpriteList` et aux bonnes coordonnées.  
-  Il contient tous les sprites du jeu et peut les mettre à jour et les dessiner.
+    Il contient tous les sprites du jeu et peut les mettre à jour et les dessiner.
 
 - **organisation des fichiers**  
   Core/ : Contient les fonctionnalités principales
@@ -134,44 +138,49 @@ Le décodage se fait comme suit:
     - `Tile.py`
     - `TileFactory.py`
 
-- **Lave**  
-La classe de base pour tous les objets du jeu est Tile qui est juste un sprite avec une catégorie `Category`.
-La `Lava` et les `Coin` sont tous deux sous-types de `Interactable`:
-```python
-class Interactable(Tile):
-    category = Category.INTERACTABLE
-    '''Classe de base pour les objets avec lesquels on peut interragir.'''
-    def on_hit(self, pawn: Pawn) -> None: 
-        '''A appeler lorsqu'il y a collision.'''
-        pass
+- **Lave et Interactable**  
+  La classe de base pour tous les objets du jeu est `Tile`qui est juste un sprite avec une catégorie `Category`.
+  La `Lava` et les `Coin` sont tous deux sous-types de `Interactable`:
+  ```python
+  class Interactable(Tile):
+      '''Classe de base pour les objets avec lesquels on peut interragir.'''
+      def on_hit(self, pawn: Pawn) -> None: 
+          '''A appeler lorsqu'il y a collision.'''
+          pass
+  
+      def on_interact(self, pawn: Pawn) -> None:
+          '''A appeler lorsqu'il y a interaction.'''
+          pass
+  ```
+  Par exemple s'il y a collision avec joueur on peut simplement appeler `on_hit` sur tous les Interactable:
+  ```python
+  hit: list[Interactable] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
+      # Récupère actuellement les pièces touchées et tue le joueur s'il touche la lave
+      for target in hit:
+          target.on_hit(self.scene.player)
+  ```
+  La lave peut alors appeler quelque chose comme : `player.kill()` dans sa méthode on_hit.  
+  Le joueur contient sa propre logique, pour l'instant lorsqu'il meurt on assigne `player.is_killed=True` et dans `gameview.update()`:
+    ```python
+  if self.scene.player.is_killed == True:
+    # Recharge le niveau actuel
+      self.setup(self.scene.current_path)
+  ```
 
-    def on_interact(self, pawn: Pawn) -> None:
-        '''A appeler lorsqu'il y a interaction.'''
-        pass
-```
-Par exemple s'il y a collision avec joueur:
-```python
-hit: list[Interactable] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
-    for target in hit:
-        target.on_hit(self.scene.player)
-```
-La lave peut alors appeler quelque chose comme : `player.kill()`.
-Le joueur contient sa propre logique.
-
-- **Blob**
-Quant à l'organisation des entités, elle sont toutes dérivées de `Pawn`.
+- **Blob**  
+Quant à l'organisation des entités, elle sont toutes dérivées de `Pawn` qui est un Tile.
+RM: pourquoi pas un interactable ? Parce que les modules python c'est un truc de con (ref circulaire).
  ```python
 class Pawn(Tile):
     '''Classe de base pour tous les objets controllables'''
-    def __init__(self, path_or_texture=None, scale=1, center_x=0, center_y=0, angle=0, category = Category.WALL, **kwargs):
-        super().__init__(path_or_texture, scale, center_x, center_y, angle, category, **kwargs)
-    
-    def move(self) -> None: pass
     def kill(self) -> None: pass
 ```
-Les pawn sont des entités qui contiennent leur logique comme bouger, sauter, attaquer, hp
-Ils sont controllé par des `Controllers` qui appeleront leurs comprtements internes selon la situation.
+Les pawn contiennent leur logique comme bouger, sauter, attaquer, hp.
+Ils sont controllé par des `Controllers` qui appelleront leurs comprtements internes selon la situation.
 
+- **Sons**  
+  Pour l'instant les sons sont contenus dans les classes qui les utilisent.
+  C'est sûrement mieux de les centraliser dans un gestionnaire qui les appelle quand nécessaire.
 
 ## Semaine 4
 

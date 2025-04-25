@@ -1,16 +1,18 @@
 import arcade
 from Core.GameScene import GameScene
 
-from GameObjects.Interactable import Interactable
-from GameObjects.Pawn import Player
 from Controllers.PlayerController import PlayerController
+from Controllers.BlobController import BlobController
 
-from Core.PhysicsManager import PhysicManager
+from Core.Managers.PhysicsManager import PhysicManager
+
+from typing import Sequence
 
 class GameView(arcade.View):
     """Main in-game view."""
     scene: GameScene
     playerControl: PlayerController
+    blobControl: BlobController
     physic: PhysicManager
     camera: arcade.camera.Camera2D
 
@@ -38,9 +40,11 @@ class GameView(arcade.View):
         
         # initialise player controller
         self.playerControl = PlayerController(self.scene.player)
+        self.blobControl = BlobController(self.scene.pawns, self.scene)
 
     def on_update(self, delta_time: float) -> None:
         self.update_camera()
+        self.blobControl.update()
         if self.scene.player.is_killed == True:
             self.setup(self.scene.current_path)
         self.physic.update() # rm met aussi a jour la position du joueur par rapport a change x
@@ -53,11 +57,11 @@ class GameView(arcade.View):
             self.scene.draw()
     
     def on_key_press(self, key: int, modifiers: int) -> bool | None:
-        self.playerControl.update(key, True)
+        self.playerControl.update_from_key(key, True)
         return super().on_key_release(key, modifiers)
     
     def on_key_release(self, key: int, modifiers: int) -> bool | None:
-        self.playerControl.update(key, False)
+        self.playerControl.update_from_key(key, False)
         return super().on_key_release(key, modifiers)
     
     ###########################################################################################################
