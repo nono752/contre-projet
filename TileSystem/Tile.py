@@ -1,7 +1,8 @@
+from __future__ import annotations
 import arcade
 from enum import Enum
-from dataclasses import dataclass
 from typing import Final
+from dataclasses import dataclass
 
 class Category(Enum):
     WALL = "Walls"
@@ -14,6 +15,7 @@ class Category(Enum):
 class TileProperty:
     texture: str
     category: Category
+    obj_type: type[Tile]
 
 class Tile(arcade.Sprite):
     category: Final[Category]

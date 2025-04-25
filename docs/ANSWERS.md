@@ -31,5 +31,7 @@ Dans chaque dossier test, on a des cartes spécifiques pour chacun des tests.
 En chargeant la bonne carte, on peut garder les tests déjà présents et en ajouter sans difficultés.
 
 ### Lave
+La lave est plus proche des pieces. 
+Ce sont tous deux des objets statiques avec lesquels le joueur peut interagir.
 
 ### Blob

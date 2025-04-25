@@ -1,4 +1,4 @@
-from MapSystem.MapLoader import MapLoader, MapData
+from MapSystem.MapLoader import MapData
 import re
 
 class MapValidator:

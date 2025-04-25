@@ -6,6 +6,7 @@ class MapData:
     '''contient les données de la carte'''
     keys: dict[str, str]
     grid: list[str]
+    path: str
 
 class MapLoader:
     '''permet de charger la carte sans vérification dans MapData'''
@@ -24,7 +25,7 @@ class MapLoader:
                 break
         grid = grid[:i]
 
-        return MapData(keys, [line.rstrip() for line in grid if line])
+        return MapData(keys, [line.rstrip() for line in grid if line], path)
     
     def find_keys(self, section: str) -> dict[str, str]:
         '''trouve toutes les lignes de la forme clé: valeur et la retourne sous les retourne sous la forme d'un dictionnaire'''

@@ -4,6 +4,7 @@ from MapSystem.MapLoader import MapLoader, MapData
 from MapSystem.MapValidator import MapValidator
 from TileSystem.TileFactory import TileFactory
 from TileSystem.Tile import *
+from GameObjects.Pawn import Player
 
 class GameScene(arcade.Scene):
     '''
@@ -53,7 +54,10 @@ class GameScene(arcade.Scene):
             self.add_sprite(category, tile)
 
     @property
-    def player(self) -> arcade.Sprite:
+    def current_path(self) -> str:
+        return self.__mapData.path
+    @property
+    def player(self) -> Player:
         return self.get_sprite_list("Players")[0]
     @property
     def walls(self) -> arcade.SpriteList:

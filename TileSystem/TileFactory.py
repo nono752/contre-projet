@@ -1,7 +1,8 @@
-import arcade
 from Core.config import *
-from MapSystem.MapLoader import MapLoader, MapData
+from MapSystem.MapLoader import MapData
 from TileSystem.Tile import Tile
+
+from GameObjects.Interactable import *
 
 class TileFactory:
     '''Gère la création des objets du jeu'''
@@ -12,9 +13,10 @@ class TileFactory:
         if value is None:
             raise ValueError(f"ERREUR: symbole inconnu {symbol}")
         
-        return Tile(path_or_texture=value.texture, center_x=x, center_y=y, scale=SCALE, category=value.category)
+        tile_type = value.obj_type
+        return tile_type(path_or_texture=value.texture, center_x=x, center_y=y, scale=SCALE, category=value.category)
     
-    def create_map_tiles(self, validData: MapData) -> list[Tile]: 
+    def create_map_tiles(self, validData: MapData) -> list[Tile]:
         '''Retourne la liste des sprites crées avec les symbols d'une MapData valide déjà à la bonne position'''
         tiles: list[Tile] = []
         grid = validData.grid

@@ -11,7 +11,8 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
   * peut-on faire un type special d'exception pour les cartes ?  
   * on ne vérifie pas que le width/heigth soient unsigned. Cela se verifie dans la verif de taille carte car fera forcement une erreur. OK ?  
   * Probleme mapdata est modifiable.  
-  * Probleme pour l'instant la carte ne peut avoir que deux sections c'est un peu du bidouillage  
+  * Probleme pour l'instant la carte ne peut avoir que deux sections c'est un peu du bidouillage.
+  * Ce serait sympa d'ajouter des methodes __repr__ ou __str__.
 
 ## Sommaire
 - [Semaine 2](#Semaine-2)
@@ -39,7 +40,8 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
 ### LOG
 - **Gestion calvier**  
 Au lieu d'assigner directement `change_x = velocity`, on ajoute/soustrait la vitesse lors de l'appui/relachement. 
-L'opposé est appliqué à la touche de déplacement en sens contraire.    
+L'opposé est appliqué à la touche de déplacement en sens contraire.  
+
 Pour le saut, on utilise les methodes:
   ```python
   def enable_multi_jump(allowed_jumps: int) -> None:
@@ -83,6 +85,8 @@ Pour l'instant hormis les test du tutoriel, aucun ajout ne semble nécessaire.
 * [X] Pouvoir récuperer carte depuis txt                                    
 * [X] Pouvoir vérifier la carte
 * [X] pouvoir lire la carte et ajouter à la scene les bon sprites
+* [ ] Ajout blob
+* [ ] Ajout lave
  
 ### LOG
 - **Décodage de la carte**  
@@ -130,6 +134,43 @@ Le décodage se fait comme suit:
     - `Tile.py`
     - `TileFactory.py`
 
+- **Lave**  
+La classe de base pour tous les objets du jeu est Tile qui est juste un sprite avec une catégorie `Category`.
+La `Lava` et les `Coin` sont tous deux sous-types de `Interactable`:
+```python
+class Interactable(Tile):
+    category = Category.INTERACTABLE
+    '''Classe de base pour les objets avec lesquels on peut interragir.'''
+    def on_hit(self, pawn: Pawn) -> None: 
+        '''A appeler lorsqu'il y a collision.'''
+        pass
+
+    def on_interact(self, pawn: Pawn) -> None:
+        '''A appeler lorsqu'il y a interaction.'''
+        pass
+```
+Par exemple s'il y a collision avec joueur:
+```python
+hit: list[Interactable] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
+    for target in hit:
+        target.on_hit(self.scene.player)
+```
+La lave peut alors appeler quelque chose comme : `player.kill()`.
+Le joueur contient sa propre logique.
+
+- **Blob**
+Quant à l'organisation des entités, elle sont toutes dérivées de `Pawn`.
+ ```python
+class Pawn(Tile):
+    '''Classe de base pour tous les objets controllables'''
+    def __init__(self, path_or_texture=None, scale=1, center_x=0, center_y=0, angle=0, category = Category.WALL, **kwargs):
+        super().__init__(path_or_texture, scale, center_x, center_y, angle, category, **kwargs)
+    
+    def move(self) -> None: pass
+    def kill(self) -> None: pass
+```
+Les pawn sont des entités qui contiennent leur logique comme bouger, sauter, attaquer, hp
+Ils sont controllé par des `Controllers` qui appeleront leurs comprtements internes selon la situation.
 
 
 ## Semaine 4

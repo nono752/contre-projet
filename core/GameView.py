@@ -1,14 +1,17 @@
 import arcade
 from Core.GameScene import GameScene
 
+from GameObjects.Interactable import Interactable
+from GameObjects.Pawn import Player
+from Controllers.PlayerController import PlayerController
+
+from Core.PhysicsManager import PhysicManager
+
 class GameView(arcade.View):
     """Main in-game view."""
     scene: GameScene
-
-    coin_sound: arcade.Sound
-    jump_sound: arcade.Sound
-
-    physic: arcade.PhysicsEnginePlatformer
+    playerControl: PlayerController
+    physic: PhysicManager
     camera: arcade.camera.Camera2D
 
     def __init__(self) -> None:
@@ -17,7 +20,6 @@ class GameView(arcade.View):
 
         # Choose a nice comfy background color
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
-
 
         # Setup our game
         self.setup("maps/map1.txt")
@@ -30,54 +32,33 @@ class GameView(arcade.View):
         """Set up the game here."""
         # initialise les membres
         self.scene = GameScene(path_file)
+
+        # initialise physique
+        self.physic = PhysicManager(self.scene, gravity_constant=1)
         
-        self.coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
-        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        # initialise player controller
+        self.playerControl = PlayerController(self.scene.player)
 
-        # parametre physique
-        self.physic = arcade.PhysicsEnginePlatformer(self.scene.player, walls=self.scene.walls, gravity_constant=1) ## rm doit etre initialisé apres avoir créé tous les murs
-        self.physic.enable_multi_jump(2)
-
-    def on_update(self, delta_time) -> None:
-        self.physic.update() # rm met aussi a jour la position du joueur par rapport a change x
+    def on_update(self, delta_time: float) -> None:
         self.update_camera()
-        #self.scene.update(delta_time)
-
-        # collecte supprime les objets collectés
-        collected: list[arcade.Sprite] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
-        for c in collected:
-            arcade.play_sound(self.coin_sound)
-            c.remove_from_sprite_lists()
+        if self.scene.player.is_killed == True:
+            self.setup(self.scene.current_path)
+        self.physic.update() # rm met aussi a jour la position du joueur par rapport a change x
 
     def on_draw(self) -> None:
         """Render the screen."""
         self.clear() # always start with self.clear()
 
-        # affiche les listes avec camera
         with self.camera.activate():
             self.scene.draw()
     
-    def on_key_press(self, symbol, modifiers) -> bool | None:
-        match symbol:
-            case arcade.key.D:
-                self.scene.player.change_x += 5
-            case arcade.key.A:
-                self.scene.player.change_x -= 5
-            case arcade.key.W:
-                if self.physic.can_jump():
-                    self.physic.jump(15)
-                    arcade.play_sound(self.jump_sound)
-            case arcade.key.ESCAPE:
-                self.setup("maps/map1.txt")
-        return super().on_key_press(symbol, modifiers)
+    def on_key_press(self, key: int, modifiers: int) -> bool | None:
+        self.playerControl.update(key, True)
+        return super().on_key_release(key, modifiers)
     
-    def on_key_release(self, symbol, modifiers) -> bool | None:
-        match symbol:
-            case arcade.key.D:
-                self.scene.player.change_x -= 5
-            case arcade.key.A:
-                self.scene.player.change_x += 5
-        return super().on_key_release(symbol, modifiers)
+    def on_key_release(self, key: int, modifiers: int) -> bool | None:
+        self.playerControl.update(key, False)
+        return super().on_key_release(key, modifiers)
     
     ###########################################################################################################
 
