@@ -34,4 +34,12 @@ En chargeant la bonne carte, on peut garder les tests déjà présents et en ajo
 La lave est plus proche des pieces. 
 Ce sont tous deux des objets statiques avec lesquels le joueur peut interagir.
 
-### Blob
+### Blob  
+- Pour détecter chute ou lave  
+  Selon la direction du blob signe de `change_x` on place un petit `SpriteSolidColor` sur le bord droit ou gauche du blob `blob.right + 1`et
+  a hauteur `blob.bottom - 1`. On peut vérifier comme cela si lors du déplacement suivant le bord sera au dessus d'un `WALL`.
+  La vérification se fait avec `arcade.check_collision_list`.
+  S'il n'y a plus de sols `change_x *= -1`.
+
+- Pour détecter obstacles latéraux
+  C'est une simple détection de collision entre le blob et les autres blobs et les WALL.

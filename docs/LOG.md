@@ -169,14 +169,17 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
 
 - **Blob**  
 Quant à l'organisation des entités, elle sont toutes dérivées de `Pawn` qui est un Tile.
-RM: pourquoi pas un interactable ? Parce que les modules python c'est un truc de con (ref circulaire).
- ```python
-class Pawn(Tile):
-    '''Classe de base pour tous les objets controllables'''
-    def kill(self) -> None: pass
-```
-Les pawn contiennent leur logique comme bouger, sauter, attaquer, hp.
-Ils sont controllé par des `Controllers` qui appelleront leurs comprtements internes selon la situation.
+Création d'une classe behavior qui associe un comportement à une liste de pawn.
+le AIcontroller garde une liste des comportements les executes sur leurs cibles respectives.
+Le blob peut aussi interagir avec le joueur mais il n'hérite pas de interactable car hérite de pawn et je préfère eviter heritage multiple.
+
+pour que le blob reste sur le sol on met un bloc à la position future de son bord droit/gazche décalé vers le bas et on verifie collision.
+
+j'ai pensé a faire un système de composants qui ressemblent un peu à behavior i.e. behavior serait un composant de toutes ses cibles.
+On pourrait avoir comme ca blob qui a un composant blobbehavior et un composant interactable. C'est peut-etre trop compliqué à faire.
+
+les pawns ont une methode on_hit la verification de colision avec joueur se fait dans le physic manager. Comme pour la lave et les pieces
+Une collision avec le joueur lui enlève de la vie
 
 - **Sons**  
   Pour l'instant les sons sont contenus dans les classes qui les utilisent.

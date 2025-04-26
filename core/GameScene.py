@@ -19,8 +19,8 @@ class GameScene(arcade.Scene):
         self.add_sprite_list("Walls", use_spatial_hash=True)
         self.add_sprite_list("Ladders", use_spatial_hash=True)
         self.add_sprite_list("Interactables", use_spatial_hash=True)
-        self.add_sprite_list("Pawns", use_spatial_hash=True)
-        self.add_sprite_list("Players", use_spatial_hash=True) # ne devrait jamais contenir plus d'un element alors pourquoi une liste
+        self.add_sprite_list("Pawns", use_spatial_hash=False)
+        self.add_sprite_list("Players", use_spatial_hash=False) # ne devrait jamais contenir plus d'un element alors pourquoi une liste
 
         self.load_map(file_path) # pas très clair mais initialise __mapData
 

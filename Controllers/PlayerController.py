@@ -1,14 +1,16 @@
 from Controllers.Controller import Controller
 from GameObjects.Pawn import Player
+from Core.GameScene import GameScene
 import arcade
 
 class PlayerController(Controller):
     '''Controller spécifique au joueur.'''
     __player: Player
 
-    def __init__(self, player: Player) -> None:
-        super().__init__([player])
-        self.__player = player
+    def __init__(self, scene: GameScene) -> None:
+        players = scene.get_sprite_list("Players")
+        super().__init__(players)
+        self.__player = scene.player
 
         # ajoute touche ici avec état initial
         self._input_state = {
@@ -19,23 +21,13 @@ class PlayerController(Controller):
 
         # on lie les actions aux touches pressées ici
         self._key_pressed = { 
-            arcade.key.D: [self.__move_right],
-            arcade.key.A: [self.__move_left],
-            arcade.key.W: [self.__jump],
+            arcade.key.D: [self.__player.move_right],
+            arcade.key.A: [self.__player.move_left],
+            arcade.key.W: [self.__player.jump],
         }
 
         # on lie les actions aux touches relachées ici
         self._key_released = {
-            arcade.key.D: [self.__move_left],
-            arcade.key.A: [self.__move_right],
+            arcade.key.D: [self.__player.move_left],
+            arcade.key.A: [self.__player.move_right],
         }
-
-    # logique du joueur
-    def __move_right(self) -> None: 
-        self.__player.move_right()
-    def __move_left(self) -> None: 
-        self.__player.move_left()
-    def __jump(self) -> None:
-        self.__player.jump()
-
-    def add_pawns(self, pawns): pass # on ne peut pas ajouter plus d'un joueur

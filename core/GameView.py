@@ -1,19 +1,18 @@
 import arcade
+
 from Core.GameScene import GameScene
-
-from Controllers.PlayerController import PlayerController
-from Controllers.BlobController import BlobController
-
-from Core.Managers.PhysicsManager import PhysicManager
+from Core.Managers.ControllerManager import ControllerManager
+from Core.Managers.PhysicManager import PhysicManager
 
 from typing import Sequence
 
 class GameView(arcade.View):
     """Main in-game view."""
     scene: GameScene
-    playerControl: PlayerController
-    blobControl: BlobController
-    physic: PhysicManager
+
+    physic_mng: PhysicManager
+    controller_mng: ControllerManager
+
     camera: arcade.camera.Camera2D
 
     def __init__(self) -> None:
@@ -29,25 +28,23 @@ class GameView(arcade.View):
         # Init camera
         self.camera = arcade.camera.Camera2D()
 
-
     def setup(self, path_file: str) -> None:
         """Set up the game here."""
-        # initialise les membres
+        # initialise la scène
         self.scene = GameScene(path_file)
 
-        # initialise physique
-        self.physic = PhysicManager(self.scene, gravity_constant=1)
-        
-        # initialise player controller
-        self.playerControl = PlayerController(self.scene.player)
-        self.blobControl = BlobController(self.scene.pawns, self.scene)
+        # initialise les managers
+        self.physic_mng = PhysicManager(self.scene, gravity_constant=1)
+        self.controller_mng = ControllerManager(self.scene)
 
     def on_update(self, delta_time: float) -> None:
         self.update_camera()
-        self.blobControl.update()
         if self.scene.player.is_killed == True:
             self.setup(self.scene.current_path)
-        self.physic.update() # rm met aussi a jour la position du joueur par rapport a change x
+
+        self.physic_mng.update()
+        self.scene.update(delta_time)
+        self.controller_mng.update(delta_time)
 
     def on_draw(self) -> None:
         """Render the screen."""
@@ -57,11 +54,11 @@ class GameView(arcade.View):
             self.scene.draw()
     
     def on_key_press(self, key: int, modifiers: int) -> bool | None:
-        self.playerControl.update_from_key(key, True)
+        self.controller_mng.update_from_key(key, True)
         return super().on_key_release(key, modifiers)
     
     def on_key_release(self, key: int, modifiers: int) -> bool | None:
-        self.playerControl.update_from_key(key, False)
+        self.controller_mng.update_from_key(key, False)
         return super().on_key_release(key, modifiers)
     
     ###########################################################################################################
@@ -75,7 +72,7 @@ class GameView(arcade.View):
         target_x = player.center_x
         target_y = max(player.center_y, pos_min_y) # max entre la position du joueur et la position minimale de la camera sur y
 
-        new_pos_x = arcade.math.lerp(current_x, target_x, 0.03)
+        new_pos_x = arcade.math.lerp(current_x, target_x, 0.02)
         new_pos_y = arcade.math.lerp(current_y, target_y, 0.1)
 
         self.camera.position = arcade.Vec2(new_pos_x, new_pos_y)

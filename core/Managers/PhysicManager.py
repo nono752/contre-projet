@@ -1,6 +1,7 @@
 import arcade
 from Core.GameScene import GameScene
 from GameObjects.Interactable import Interactable
+from GameObjects.Pawn import Pawn
 
 class PhysicManager(arcade.PhysicsEnginePlatformer):
     scene: GameScene
@@ -14,9 +15,12 @@ class PhysicManager(arcade.PhysicsEnginePlatformer):
     
     def update(self):
         self.__check_collision()
+        self.scene.player.update()
         return super().update()
     
     def __check_collision(self) -> None:
-        hit: list[Interactable] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
-        for target in hit:
+        hit_interactable = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)
+        hit_pawns = arcade.check_for_collision_with_list(self.scene.player, self.scene.pawns)
+        for target in hit_interactable or hit_pawns:
             target.on_hit(self.scene.player)
+        

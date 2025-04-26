@@ -1,21 +1,20 @@
 import arcade
 from GameObjects.Pawn import Pawn
 from collections.abc import Callable
-from typing import Sequence
 
 class Controller:
-    _pawns: list[Pawn]
+    _pawns: arcade.SpriteList
     _input_state: dict[int, bool]
     _key_pressed: dict[int, list[Callable[[],None]]]
     _key_released: dict[int, list[Callable[[],None]]]
 
-    def __init__(self, pawns: Sequence[Pawn]) -> None: ## tout ce mic mac de sequence est dû à la co-variance
-        self._pawns = list(pawns)
+    def __init__(self, pawns: arcade.SpriteList) -> None:
+        self._pawns = pawns
         self._input_state = {}
         self._key_pressed = {}
         self._key_released = {}
     
-    def update(self) -> None: pass
+    def update(self, delta_time: float) -> None: pass
 
     def update_from_key(self, key: int, state: bool) -> None:
         '''Met à jour le controller via des clés en principe appelé dans on_key_pressed/released'''
@@ -42,30 +41,3 @@ class Controller:
         if key_last_state == new_state:
             return True
         return False
-
-    def add_pawns(self, pawns: list[Pawn]) -> None:
-        '''Ajoute une liste de pawns au controller'''
-        self._pawns += pawns
-    def remove_pawns(self, pawns: list[Pawn]) -> None:
-        for pawn in pawns:
-            if pawn in self._pawns:
-                self._pawns.remove(pawn)
-
-class AIController(Controller):
-    _scene: arcade.Scene
-    def __init__(self, pawns: Sequence[Pawn], scene: arcade.Scene) -> None:
-        super().__init__(pawns)
-        self._scene = scene
-    
-    def update(self) -> None:
-        for pawn in self._pawns:
-            self.pattern(pawn)
-    
-    def pattern(self, pawn: Pawn) -> None:
-        '''Definit les patten de mouvement indépendant des entrées joueur'''
-        pass
-
-
-
-
-    
