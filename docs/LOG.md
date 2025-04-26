@@ -11,9 +11,12 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
   * Est-ce que les les tests sont suffisants pour loader et validator ? Devrait-on vérifier affichage des exceptions ?  
   * peut-on faire un type special d'exception pour les cartes ?  
   * on ne vérifie pas que le width/heigth soient unsigned. Cela se verifie dans la verif de taille carte car fera forcement une erreur. OK ?  
-  * Probleme mapdata est modifiable.  
+  * Probleme mapdata est modifiable. De manière générale encapsulation est a revoir.
   * Probleme pour l'instant la carte ne peut avoir que deux sections c'est un peu du bidouillage.
   * Ce serait sympa d'ajouter des methodes __repr__ ou __str__.
+
+  * Revoir le AIController et la logique de behavior est-ce que pawn ne devrait pas avoir un membre behavior ?
+  * Peut-on généraliser le point précédent et faire des composition de system par exemple un membre interactable ?
 
 ## Sommaire
 - [Semaine 2](#Semaine-2)
@@ -30,7 +33,7 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
 ---
 
 ## Semaine 2
-### taches
+### Taches
 * [x] Créer le LOG.md                                                 
 * [x] S'inscrire en binôme                                            
 * [x] Découverte d'Arcade                                             
@@ -80,16 +83,20 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
 
 
 ## Semaine 3
-### taches
-* [ ] Mettre le LOG à jour                                        
+### Taches
+* [x] Mettre le LOG à jour                                        
 * [x] Mettre le ANSWER à jour                                        
 * [X] Pouvoir récuperer carte depuis txt                                    
 * [X] Pouvoir vérifier la carte
 * [X] pouvoir lire la carte et ajouter à la scene les bon sprites
-* [ ] Ajout blob
+* [x] Ajout blob
 * [x] Ajout lave
 * [x] Séparation logique du joueur dans une classe `Player`
 * [x] Récupération entrées clavier dans une classe `Controller`
+* [ ] Création d'un classe Behavior générale pour les comportements
+* [ ] Faire les tests de : Controllers, ControllerManager, GameObjects, Behaviors
+
+rm voir si change structure avant de faire des tests
  
 ### LOG
 - **Décodage de la carte**  
@@ -168,24 +175,35 @@ Mettez ici ce que vous pensez devoir être la ou les 2 prochaines étapes pour c
   ```
 
 - **Blob**  
-Quant à l'organisation des entités, elle sont toutes dérivées de `Pawn` qui est un Tile.
-Création d'une classe behavior qui associe un comportement à une liste de pawn.
-le AIcontroller garde une liste des comportements les executes sur leurs cibles respectives.
-Le blob peut aussi interagir avec le joueur mais il n'hérite pas de interactable car hérite de pawn et je préfère eviter heritage multiple.
+  Quant à l'organisation des entités, elle sont toutes dérivées de `Pawn` qui est un Tile.
+  Création d'une classe behavior qui associe un comportement à une liste de pawn.
+  le AIcontroller garde une liste des comportements les executes sur leurs cibles respectives.
+  Le blob peut aussi interagir avec le joueur mais il n'hérite pas de interactable car hérite de pawn et je préfère eviter heritage multiple.
+  
+  Pour que le blob reste sur le sol on met un bloc à la position future de son bord droit/gazche décalé vers le bas et on verifie collision.
+  les pawns ont une methode on_hit la verification de colision avec joueur se fait dans le physic manager. Comme pour la lave et les pieces
+  Une collision avec le joueur lui enlève de la vie et le rend invincible pendant un temps donné et lui donne une vélocité verticale.
 
-pour que le blob reste sur le sol on met un bloc à la position future de son bord droit/gazche décalé vers le bas et on verifie collision.
+  j'ai pensé a faire un système de composants qui ressemblent un peu à behavior i.e. behavior serait un composant de toutes ses cibles.
+  On pourrait avoir comme ca blob qui a un composant blobbehavior et un composant interactable. Voir si c'est compliqué à faire.
 
-j'ai pensé a faire un système de composants qui ressemblent un peu à behavior i.e. behavior serait un composant de toutes ses cibles.
-On pourrait avoir comme ca blob qui a un composant blobbehavior et un composant interactable. C'est peut-etre trop compliqué à faire.
-
-les pawns ont une methode on_hit la verification de colision avec joueur se fait dans le physic manager. Comme pour la lave et les pieces
-Une collision avec le joueur lui enlève de la vie
 
 - **Sons**  
   Pour l'instant les sons sont contenus dans les classes qui les utilisent.
   C'est sûrement mieux de les centraliser dans un gestionnaire qui les appelle quand nécessaire.
 
 ## Semaine 4
+### Taches
+* [ ] Faire un système d'affichage pour score, hp, ...
+* [ ] Ajouter Interactable Door
+* [x] Modifier playercontroller pour pouvoir interagir
+* [x] Modifier validateur pour tester nouvelle clé `next`
+* [x] Modifier scene pour pouvoir changer de scene en gardant les stat du joueur
+* [ ] Evenements souris
+* [ ] Classe Weapon et Sword
+* [ ] Tests
+
+### LOG
 
 ## Semaine 5
 

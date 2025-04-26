@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 import re
 
+## CHANGER EN RAWMAPDATA
 @dataclass
 class MapData:
     '''contient les données de la carte'''
     keys: dict[str, str]
     grid: list[str]
-    path: str
+    curr_path: str
 
 class MapLoader:
     '''permet de charger la carte sans vérification dans MapData'''
@@ -14,18 +15,12 @@ class MapLoader:
         """retourne les données de la carte sans vérifications"""
         with open(path, 'r', encoding="utf8") as f:
             content = f.read()
-            sections = content.split('---\n', maxsplit=1) # maxsplit pour eviter de separer la carte si elle contient une ligne separateur
+    
+        sections = re.findall(r'(?:^|\n---\n)(.*?)(?=(?:\n---\n|\n---$|$))', content, re.DOTALL) # utiliser split ici ne fonctionne pas si ligne finit par ---\n
+        keys = self.find_keys(sections[0]) if sections[0] else {}
+        grid = sections[1].split("\n") if sections[1] else ""
         
-        keys = self.find_keys(sections[0])
-        grid = sections[1].split('\n') if len(sections) > 1 else []
-
-        # supprime tout ce qu'il y a apres le dernier --- pour éviter problème nb lignes s'il y a lignes vides en fin de fichier
-        for i in range(len(grid) - 1, 0, -1):  # Parcours inverse avec index
-            if grid[i] == "---":
-                break
-        grid = grid[:i]
-
-        return MapData(keys, [line.rstrip() for line in grid if line], path)
+        return MapData(keys, [line.rstrip() for line in grid], path)
     
     def find_keys(self, section: str) -> dict[str, str]:
         '''trouve toutes les lignes de la forme clé: valeur et la retourne sous les retourne sous la forme d'un dictionnaire'''

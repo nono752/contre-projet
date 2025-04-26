@@ -1,0 +1,7 @@
+width: 5
+height: 2
+next: tests/test_core/maps/coin.txt
+---
+S   E
+=====
+---

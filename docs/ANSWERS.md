@@ -21,10 +21,10 @@ Pas de questions
 ### Conception fichier  
 La lecture du fichier est séparé en trois parties chacun ayant une responsabilité:
   1. Récupération du fichier dans une structure spécifique.
-  2. Vérification de ce qui a été récupéré.
+  2. Vérification du fichié via cette même structure
   3. Chargement des objets du jeu à partir de la structure vérifiée.
 
-Ainsi les tests sont simples un fichier test par responsabilité.
+Ainsi les tests sont séparés par responsabilité: Récup/Vérif/Chargement
 
 ### Tests
 Dans chaque dossier test, on a des cartes spécifiques pour chacun des tests.

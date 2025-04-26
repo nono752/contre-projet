@@ -2,31 +2,43 @@ import pytest
 from MapSystem.MapValidator import MapValidator
 from MapSystem.MapLoader import MapLoader, MapData
 
-loader = MapLoader()
-validator = MapValidator()
-valid_data = loader.load_from_file("tests/test_map_system/maps/valid.txt")
+def test_validate() -> None:
+    loader = MapLoader()
+    validator = MapValidator()
 
-def test_check_required_keys() -> None: 
-    invalid_data = loader.load_from_file("tests/test_map_system/maps/missing_key.txt")
+    # test cas valides
+    valid1 = loader.load_from_file("tests/test_map_system/maps/valid1.txt")
+    valid2 = loader.load_from_file("tests/test_map_system/maps/valid2.txt")
+    validator.validate(valid1)
+    validator.validate(valid2)
 
-    validator.validate(valid_data) # erreur si exception levée
+    # test les clés obligatoires
+    missing_key = loader.load_from_file("tests/test_map_system/maps/missing_key.txt")
     with pytest.raises(Exception):
-        validator.validate(invalid_data) # ok si exception levée
-
-def test_check_keys_type() -> None:
-    invalid_data1 = loader.load_from_file("tests/test_map_system/maps/wrong_type1.txt")
-    invalid_data2 = loader.load_from_file("tests/test_map_system/maps/wrong_type2.txt")
-
-    validator.validate(valid_data)
+        validator.validate(missing_key) # ok si exception levée
+    
+    # test les types des clés
+    wrong_type1 = loader.load_from_file("tests/test_map_system/maps/wrong_type1.txt")
+    wrong_type2 = loader.load_from_file("tests/test_map_system/maps/wrong_type2.txt")
     with pytest.raises(Exception):
-        validator.validate(invalid_data1)
-
+        validator.validate(wrong_type1)
     with pytest.raises(Exception):
-        validator.validate(invalid_data2)
+        validator.validate(wrong_type2)
 
-def test_check_grid_dimension() -> None:
+    # test les dimensions
     # on suppose que les type et clés obligatoires sont déjà vérifiés
-    invalid_data = loader.load_from_file("tests/test_map_system/maps/grid_line_too_long.txt")
-    validator.validate(valid_data)
+    grid_line_too_long = loader.load_from_file("tests/test_map_system/maps/grid_line_too_long.txt")
+    grid_height_too_long = loader.load_from_file("tests/test_map_system/maps/grid_height_too_long.txt")
     with pytest.raises(Exception):
-        validator.validate(invalid_data)
+        validator.validate(grid_line_too_long)
+    with pytest.raises(Exception):
+        validator.validate(grid_height_too_long)
+    
+    # test starts et exits
+    too_much_start = loader.load_from_file("tests/test_map_system/maps/too_much_start.txt")
+    exit_but_no_next = loader.load_from_file("tests/test_map_system/maps/exit_but_no_next.txt")
+    with pytest.raises(Exception):
+        validator.validate(too_much_start)
+    with pytest.raises(Exception):
+        validator.validate(exit_but_no_next)
+    

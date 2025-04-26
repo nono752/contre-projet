@@ -1,12 +1,13 @@
 import arcade
 
+from Core.config import TILE_SIZE
 from Core.GameScene import GameScene
 from Core.Managers.ControllerManager import ControllerManager
 from Core.Managers.PhysicManager import PhysicManager
-
+import cmath as math
 from typing import Sequence
 
-class GameView(arcade.View):
+class GameView(arcade.View): ## devrait etre un listener
     """Main in-game view."""
     scene: GameScene
 
@@ -18,7 +19,7 @@ class GameView(arcade.View):
     def __init__(self) -> None:
         # Magical incantion: initialize the Arcade view
         super().__init__()
-
+ 
         # Choose a nice comfy background color
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
@@ -27,7 +28,8 @@ class GameView(arcade.View):
 
         # Init camera
         self.camera = arcade.camera.Camera2D()
-
+        self.camera.zoom = 1.5
+    
     def setup(self, path_file: str) -> None:
         """Set up the game here."""
         # initialise la scène
@@ -35,16 +37,15 @@ class GameView(arcade.View):
 
         # initialise les managers
         self.physic_mng = PhysicManager(self.scene, gravity_constant=1)
-        self.controller_mng = ControllerManager(self.scene)
+        self.controller_mng = ControllerManager(self.physic_mng)
 
     def on_update(self, delta_time: float) -> None:
-        self.update_camera()
-        if self.scene.player.is_killed == True:
+        self.update_camera(delta_time)
+        if self.scene.player.is_killed == True: ## déplacer dans un evenement
             self.setup(self.scene.current_path)
 
         self.physic_mng.update()
         self.scene.update(delta_time)
-        self.controller_mng.update(delta_time)
 
     def on_draw(self) -> None:
         """Render the screen."""
@@ -63,17 +64,22 @@ class GameView(arcade.View):
     
     ###########################################################################################################
 
-    def update_camera(self) -> None:
+    # fair eun composant camerea mettre dans joueuor
+    def update_camera(self, dt: float) -> None:
         player = self.scene.player
+        # pourlinstant recalcul dasn update stpide
+        pos_min_y = self.camera.height/2 # ATTENTION NE FONCTIONNE QUE SI LA CARTE EST CONSTRUITE AU DESSUS DE 0
+        pos_min_x = self.camera.width/2 # PAREIL
+        pos_max_x = int(self.scene.data.keys["width"])*TILE_SIZE - self.camera.width/2
+
         current_x = self.camera.position[0]
         current_y = self.camera.position[1]
-        pos_min_y = self.camera.height/2 ## ATTENTION NE FONCTIONNE QUE SI LA CARTE EST CONSTRUITE AU DESSUS DE 0
+        target_x = max(player.center_x, pos_min_x)
+        target_x = min(target_x, pos_max_x)
+        target_y = max(player.center_y, pos_min_y)
 
-        target_x = player.center_x
-        target_y = max(player.center_y, pos_min_y) # max entre la position du joueur et la position minimale de la camera sur y
-
-        new_pos_x = arcade.math.lerp(current_x, target_x, 0.02)
-        new_pos_y = arcade.math.lerp(current_y, target_y, 0.1)
+        new_pos_x = arcade.math.smerp(current_x, target_x, dt, 0.5)
+        new_pos_y = arcade.math.smerp(current_y, target_y, dt, 0.2)
 
         self.camera.position = arcade.Vec2(new_pos_x, new_pos_y)
         

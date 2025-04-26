@@ -6,7 +6,8 @@ class MapValidator:
     REQUIRED_KEYS = {"width", "height"}
     KEY_TYPES = {
         "width": int,
-        "height": int
+        "height": int,
+        "next": str
     }
 
     def validate(self, data: MapData) -> None:
@@ -14,7 +15,8 @@ class MapValidator:
         self.__check_required_keys(data.keys)
         self.__check_keys_type(data.keys)
         self.__check_grid_dimension(data)
-        self.__check_start_count(data)
+        self.__check_start(data)
+        self.__check_exit(data)
 
     def __check_required_keys(self, keys: dict[str, str]) -> None:
         '''vérifie existence clés obligatoires. Lève exception si pas vérifié.'''
@@ -27,7 +29,6 @@ class MapValidator:
         for key, val in keys.items():
             if key not in self.KEY_TYPES:
                 raise Exception(f"ERREUR: clé inconnue {key}")
-
             try:
                 casted_value = self.KEY_TYPES[key](val) # tente une conversion si ne fonctionne pas TypeError
                 if not isinstance(casted_value, self.KEY_TYPES[key]): # puis compare avec le type attendu
@@ -57,10 +58,16 @@ class MapValidator:
         width = int(data.keys["width"])
         data.grid = [line.ljust(width) for line in data.grid]
    
-    def __check_start_count(self, data: MapData) -> None:
+    def __check_start(self, data: MapData) -> None:
         '''vérifie que le point de départ du joueur est unique'''
         count = sum(len(re.findall("S", line)) for line in data.grid)
         if count != 1:
             raise Exception(f"ERREUR: compte de start incorrect {count}")
-        
+    def __check_exit(self, data: MapData)  -> None:
+        '''S'il y a une porte vérifie que la clé next existe'''
+        count = sum(len(re.findall("E", line)) for line in data.grid)
+        if count >= 1:
+            key = data.keys.get("next")
+            if key is None:
+                raise Exception(f"ERREUR: {count} portes mais pas de clé next")
 # on peut faire des validateurs dérivés si niveaux speciaux par exemple

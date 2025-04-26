@@ -14,4 +14,5 @@ SYMBOL_MAPPING = {
     "*": TileProperty(":resources:/images/items/coinGold.png", Category.INTERACTABLE, Coin),
     "o": TileProperty(":resources:/images/enemies/slimeBlue.png", Category.PAWN, Blob),
     "£": TileProperty(":resources:/images/tiles/lava.png", Category.INTERACTABLE, Lava),
+    "E": TileProperty(":resources:/images/tiles/signExit.png", Category.INTERACTABLE, Door),
 }

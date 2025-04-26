@@ -13,8 +13,6 @@ class Controller:
         self._input_state = {}
         self._key_pressed = {}
         self._key_released = {}
-    
-    def update(self, delta_time: float) -> None: pass
 
     def update_from_key(self, key: int, state: bool) -> None:
         '''Met à jour le controller via des clés en principe appelé dans on_key_pressed/released'''
