@@ -7,7 +7,7 @@
 ##
 ##@dataclass
 ##class MapData:
-##    '''contient les données de la carte après formatage et vérification'''
+##    '''contient les données de la carte après vérification formate lors de init'''
 ##    keys: dict[str, str]
 ##    grid: list[str]
 ##    curr_path: str

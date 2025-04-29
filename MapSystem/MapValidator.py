@@ -70,4 +70,5 @@ class MapValidator:
             key = data.keys.get("next")
             if key is None:
                 raise Exception(f"ERREUR: {count} portes mais pas de clé next")
+
 # on peut faire des validateurs dérivés si niveaux speciaux par exemple

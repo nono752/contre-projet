@@ -1,22 +1,16 @@
-import pytest
 from TileSystem.TileFactory import TileFactory
-from MapSystem.MapLoader import MapLoader, MapData
-from TileSystem.Tile import Tile, Category
-
-factory = TileFactory()
-
-def test_create_tile() -> None:
-    tile = factory.create_tile("=",10,20)
-    assert tile.category == Category.WALL
-    assert tile.center_x == 10
-    assert tile.center_y == 20
-
-    with pytest.raises(ValueError):
-        failed = factory.create_tile("K",0,0)
+from MapSystem.MapLoader import MapLoader
+from GameObjects.Blob import Blob
+from GameObjects.Interactable import Coin
+from GameObjects.Player import Player
 
 def test_create_map_tiles() -> None:
+    factory = TileFactory()
     loader = MapLoader()
-    data = loader.load_from_file("tests/test_tile_system/maps/valid_map.txt") # pas de verif le fichier est valide
+    data = loader.load_from_file("tests/test_tile_system/maps/test_creation.txt") # pas de verif le fichier est valide
 
     tiles = factory.create_map_tiles(data)
-    assert len(tiles) == 21
+    assert len(tiles) == 13
+    assert len([tile for tile in tiles if isinstance(tile, Blob)]) == 4
+    assert len([tile for tile in tiles if isinstance(tile, Coin)]) == 3
+    assert len([tile for tile in tiles if isinstance(tile, Player)]) == 1

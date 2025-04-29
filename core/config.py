@@ -1,11 +1,12 @@
 from TileSystem.Tile import TileProperty, Category, Tile
 from GameObjects.Interactable import *
-from GameObjects.Pawn import Player
+from GameObjects.Player import Player
 from GameObjects.Blob import Blob
 
-## constantes
+## paremètres des tiles
 TILE_SIZE = 64
 SCALE = 0.5
+
 SYMBOL_MAPPING = {
     "S": TileProperty(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png", Category.PLAYER, Player),
     "=": TileProperty(":resources:images/tiles/grassMid.png", Category.WALL, Tile),
@@ -16,3 +17,5 @@ SYMBOL_MAPPING = {
     "£": TileProperty(":resources:/images/tiles/lava.png", Category.INTERACTABLE, Lava),
     "E": TileProperty(":resources:/images/tiles/signExit.png", Category.INTERACTABLE, Door),
 }
+
+SYMBOLS = [key for key in SYMBOL_MAPPING]

@@ -10,6 +10,7 @@ class Category(Enum):
     INTERACTABLE = "Interactables"
     PAWN = "Pawns"
     PLAYER = "Players"
+    PLATFORM = "Platforms"
 
 @dataclass(frozen=True)
 class TileProperty:

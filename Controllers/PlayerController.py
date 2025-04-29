@@ -1,5 +1,5 @@
 from Controllers.Controller import Controller
-from GameObjects.Pawn import Player
+from GameObjects.Player import Player
 from Core.Managers.PhysicManager import PhysicManager
 import arcade
 
@@ -8,11 +8,10 @@ class PlayerController(Controller):
     __player: Player
     __physic: PhysicManager
 
-    def __init__(self, physic: PhysicManager) -> None:
-        players = physic.scene.get_sprite_list("Players")
+    def __init__(self, physic: PhysicManager) -> None: ## peut-etre que la physique n'est pas nécessaire
+        super().__init__()
         self.__player = physic.scene.player
         self.__physic = physic
-        super().__init__(players)
 
         # ajoute touche ici avec état initial
         self._input_state = {
@@ -24,8 +23,8 @@ class PlayerController(Controller):
 
         # on lie les actions aux touches pressées ici
         self._key_pressed = { 
-            arcade.key.D: [self.__player.move_right, self.__player.flip],
-            arcade.key.A: [self.__player.move_left, self.__player.flip],
+            arcade.key.D: [self.__player.move_right],
+            arcade.key.A: [self.__player.move_left],
             arcade.key.W: [self.__player.jump],
             arcade.key.E: [self.__physic.interact],
         }

@@ -1,18 +1,18 @@
 import arcade
 from TileSystem.Tile import Tile, Category
-from .Pawn import Pawn, Player
-from Event import *
+from .Pawn import Pawn
+from .Player import Player
 from abc import abstractmethod
 
 class Interactable(Tile):
     '''Classe de base pour les objets avec lesquels on peut interragir.'''
     @abstractmethod
-    def on_hit(self, pawn: Pawn) -> Event|None:
+    def on_hit(self, pawn: Pawn) ->None:
         '''A appeler lorsqu'il y a collision.''' 
         ...
 
     @abstractmethod
-    def on_interact(self, player: Player) -> Event|None:
+    def on_interact(self, player: Player) -> None:
         '''A appeler lorsqu'il y a interaction avec le joueur.'''
         ...
 
@@ -38,11 +38,9 @@ class Coin(Interactable):
         return None
 
 class Door(Interactable):
-    change_map_event: Event
-
     def __init__(self, path_or_texture=None, scale=1, center_x=0, center_y=0, angle=0, category = Category.WALL, **kwargs):
         super().__init__(path_or_texture, scale, center_x, center_y, angle, category, **kwargs)
         self.change_map_event = None
 
     def on_interact(self, player):
-        return self.change_map_event
+        return

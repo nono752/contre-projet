@@ -21,10 +21,10 @@ def test_change() -> None:
     scene = GameScene("tests/test_core/maps/change_map.txt")
     assert len(scene.interactables) == 1
     assert isinstance(scene.interactables[0], Door)
-    assert scene.current_path == "tests/test_core/maps/change_map.txt"
+    assert scene.data.curr_path == "tests/test_core/maps/change_map.txt"
 
     # deux interactable pieces
     scene.next_map()
     assert len(scene.interactables) == 2
     assert isinstance(scene.interactables[0], Coin)
-    assert scene.current_path == "tests/test_core/maps/coin.txt"
+    assert scene.data.curr_path == "tests/test_core/maps/coin.txt"

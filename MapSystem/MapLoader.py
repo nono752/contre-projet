@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 import re
 
-## CHANGER EN RAWMAPDATA
 @dataclass
 class MapData:
     '''contient les données de la carte'''
@@ -16,7 +15,7 @@ class MapLoader:
         with open(path, 'r', encoding="utf8") as f:
             content = f.read()
     
-        sections = re.findall(r'(?:^|\n---\n)(.*?)(?=(?:\n---\n|\n---$|$))', content, re.DOTALL) # utiliser split ici ne fonctionne pas si ligne finit par ---\n
+        sections = re.findall(r'(?:^|\n---\n)(.*?)(?=(?:\n---\n|\n---$|$))', content, re.DOTALL) # si jamais le fichier finit par \n--- (split fait l'affaire si ce detail ne compte pas)
         keys = self.find_keys(sections[0]) if sections[0] else {}
         grid = sections[1].split("\n") if sections[1] else ""
         
