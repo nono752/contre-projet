@@ -4,16 +4,15 @@ from GameObjects.Interactable import *
 from GameObjects.Pawn import Pawn
 from GameObjects.Blob import Blob
 
-## peut etre devrait separer de physic engine et faire collision mng + physicEngine
 class PhysicManager(arcade.PhysicsEnginePlatformer):
-    '''Connait la scene. Doit gérer les collisions du jeu'''
+    '''Connait la scene. Doit gérer les collisions du jeu et la gravité du joueur'''
     scene: GameScene
     def __init__(self, scene: GameScene, gravity_constant = 0.5, ladders = None, walls = None):
         super().__init__(scene.player, scene.walls, gravity_constant, ladders, walls)
         self.scene = scene
         self.scene.player.physics_engines.append(self)
 
-        # parametres d'initialisation
+        # parametres physic engine
         self.enable_multi_jump(2)
     
     def update(self):
@@ -33,8 +32,7 @@ class PhysicManager(arcade.PhysicsEnginePlatformer):
         for blob in blobs:
             # si colisionne lateralement
             if arcade.check_for_collision_with_lists(blob, [self.scene.pawns, self.scene.walls]):
-                blob.texture = blob.texture.flip_horizontally()
-                blob.change_x *= -1
+                blob.change_direction()
                 continue
             # si le point en bas à droite/gauche en colision avec mur
             collision_box = arcade.SpriteSolidColor(width=1, height=1)
@@ -43,8 +41,9 @@ class PhysicManager(arcade.PhysicsEnginePlatformer):
             else:
                 collision_box.position = (blob.left + blob.change_x, blob.bottom - 1)
             if not arcade.check_for_collision_with_list(collision_box, self.scene.walls):
-                blob.texture = blob.texture.flip_horizontally()
-                blob.change_x *= -1
+                blob.change_direction()
+
+
 
     def interact(self) -> None:
         hit_interactable: list[Interactable] = arcade.check_for_collision_with_list(self.scene.player, self.scene.interactables)

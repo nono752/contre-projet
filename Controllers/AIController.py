@@ -8,7 +8,7 @@ class AIController(Controller):
     __physic: PhysicManager
 
     def __init__(self, physic: PhysicManager) -> None:
-        super().__init__(physic.scene.pawns)
+        super().__init__()
         self.__physic = physic
 
     def update_from_key(self, key, state) -> None: pass

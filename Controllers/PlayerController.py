@@ -9,10 +9,9 @@ class PlayerController(Controller):
     __physic: PhysicManager
 
     def __init__(self, physic: PhysicManager) -> None:
-        players = physic.scene.get_sprite_list("Players")
+        super().__init__()
         self.__player = physic.scene.player
         self.__physic = physic
-        super().__init__(players)
 
         # ajoute touche ici avec état initial
         self._input_state = {
@@ -32,6 +31,6 @@ class PlayerController(Controller):
 
         # on lie les actions aux touches relachées ici
         self._key_released = {
-            arcade.key.D: [self.__player.move_left],
-            arcade.key.A: [self.__player.move_right],
+            arcade.key.D: [self.__player.stop_moving_right],
+            arcade.key.A: [self.__player.stop_moving_left],
         }
