@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 import re
+import yaml
+from typing import Any
 
 ## CHANGER EN RAWMAPDATA
 @dataclass
 class MapData:
     '''contient les données de la carte'''
-    keys: dict[str, str]
+    keys: Any
     grid: list[str]
     curr_path: str
 
@@ -15,13 +17,8 @@ class MapLoader:
         """retourne les données de la carte sans vérifications"""
         with open(path, 'r', encoding="utf8") as f:
             content = f.read()
-    
-        sections = re.findall(r'(?:^|\n---\n)(.*?)(?=(?:\n---\n|\n---$|$))', content, re.DOTALL) # si jamais le fichier finit par \n--- (split fait l'affaire si ce detail ne compte pas)
-        keys = self.find_keys(sections[0]) if sections[0] else {}
-        grid = sections[1].split("\n") if sections[1] else ""
-        
+
+        sections = re.findall(r'(?:^|\n---\n)(.*?)(?=(?:\n---\n|\n---$|$))', content, re.DOTALL) # si jamais le fichier finit par \n--- ne le prend pas dans la carte
+        keys = yaml.safe_load(sections[0])
+        grid = sections[1].split("\n") if sections[1] else ""   
         return MapData(keys, [line.rstrip() for line in grid], path)
-    
-    def find_keys(self, section: str) -> dict[str, str]:
-        '''trouve toutes les lignes de la forme clé: valeur et la retourne sous les retourne sous la forme d'un dictionnaire'''
-        return { match.group(1): match.group(2).strip() for match in re.finditer(r'^\s*(\w+)\s*:\s*(\S.*)$', section, re.MULTILINE) }

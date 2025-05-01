@@ -12,30 +12,26 @@ class MapValidator:
 
     def validate(self, data: MapData) -> None:
         '''passe tous les check de la classe'''
-        self.__check_required_keys(data.keys)
-        self.__check_keys_type(data.keys)
+        self.__check_required_keys(data)
+        self.__check_keys_type(data)
         self.__check_grid_dimension(data)
         self.__check_start(data)
         self.__check_exit(data)
 
-    def __check_required_keys(self, keys: dict[str, str]) -> None:
+    def __check_required_keys(self, data: MapData) -> None:
         '''vérifie existence clés obligatoires. Lève exception si pas vérifié.'''
-        missing = self.REQUIRED_KEYS - keys.keys() # on prend l'intersection des sets
+        missing = self.REQUIRED_KEYS - data.keys.keys() # on prend l'intersection des sets
         if missing:
             raise Exception(f"ERREUR: clés manquantes {missing}")
     
-    def __check_keys_type(self, keys: dict[str, str]) -> None:
+    def __check_keys_type(self, data: MapData) -> None:
         '''vérifie que les clés sont connues et ont les type attendu. Lève exception si pas vérifié.'''
-        for key, val in keys.items():
+        for key, val in data.keys.items():
             if key not in self.KEY_TYPES:
                 raise Exception(f"ERREUR: clé inconnue {key}")
-            try:
-                casted_value = self.KEY_TYPES[key](val) # tente une conversion si ne fonctionne pas TypeError
-                if not isinstance(casted_value, self.KEY_TYPES[key]): # puis compare avec le type attendu
-                    raise ValueError(f"ERREUR: {casted_value} n'est pas instance de {self.KEY_TYPES[key].__name__}")
-            except (ValueError, TypeError):
-                # l'erreur est levée si les types ne match pas ou si la conversion échoue
-                raise Exception(f"ERREUR: la valeur {val} pour la clé {key} n'est pas du type {self.KEY_TYPES[key]}")
+            
+            if not type(val) == self.KEY_TYPES[key]:
+                raise Exception(f"ERREUR: type de {key} recu {type(val)}, attendu {self.KEY_TYPES[key]}")
     
     def __check_grid_dimension(self, data: MapData) -> None:
         '''
@@ -47,7 +43,7 @@ class MapValidator:
             raise Exception(f"ERREUR: hauteur de carte incorrecte attendu:{int(data.keys["height"])}, recu:{len(data.grid)}")
         if any(len(line) > int(data.keys["width"]) for line in data.grid):
             raise Exception("ERREUR: largeur de carte dépassée")
-        
+
         self.__complete_grid(data)
 
     def __complete_grid(self, data: MapData) -> None:
@@ -55,7 +51,7 @@ class MapValidator:
         Complete la grille avec des espaces si ligne trop est courte.
         Attention utiliser uniquement apres avoir vérifie l'existence des clé obligatoires et leur type.
         '''
-        width = int(data.keys["width"])
+        width = data.keys["width"]
         data.grid = [line.ljust(width) for line in data.grid]
    
     def __check_start(self, data: MapData) -> None:

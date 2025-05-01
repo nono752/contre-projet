@@ -17,5 +17,5 @@ class Blob(Pawn):
             return
         if not pawn.is_invincible:
             pawn.take_damage(self._damage)
-            pawn.change_y = 15
+            pawn.change_y = 10
 

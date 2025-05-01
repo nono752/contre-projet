@@ -16,3 +16,5 @@ SYMBOL_MAPPING = {
     "£": TileProperty(":resources:/images/tiles/lava.png", Category.INTERACTABLE, Lava),
     "E": TileProperty(":resources:/images/tiles/signExit.png", Category.INTERACTABLE, Door),
 }
+
+SYMBOLS = [symbol for symbol in SYMBOL_MAPPING]

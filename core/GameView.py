@@ -64,10 +64,9 @@ class GameView(arcade.View): ## devrait etre un listener
     
     ###########################################################################################################
 
-    # fair eun composant camerea mettre dans joueuor
+    # fair un composant camerea mettre dans joueur
     def update_camera(self, dt: float) -> None:
         player = self.scene.player
-        # pourlinstant recalcul dasn update stpide
         pos_min_y = self.camera.height/2 # ATTENTION NE FONCTIONNE QUE SI LA CARTE EST CONSTRUITE AU DESSUS DE 0
         pos_min_x = self.camera.width/2 # PAREIL
         pos_max_x = int(self.scene.data.keys["width"])*TILE_SIZE - self.camera.width/2
