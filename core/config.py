@@ -18,4 +18,8 @@ SYMBOL_MAPPING = {
     "E": TileProperty(":resources:/images/tiles/signExit.png", Category.INTERACTABLE, Door),
 }
 
+<<<<<<< HEAD
 SYMBOLS = [key for key in SYMBOL_MAPPING]
+=======
+SYMBOLS = [symbol for symbol in SYMBOL_MAPPING]
+>>>>>>> 56eb9ecb8e7cbe85daeee55129d4e62ef5beafb0

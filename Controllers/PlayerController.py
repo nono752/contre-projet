@@ -31,6 +31,6 @@ class PlayerController(Controller):
 
         # on lie les actions aux touches relachées ici
         self._key_released = {
-            arcade.key.D: [self.__player.move_left],
-            arcade.key.A: [self.__player.move_right],
+            arcade.key.D: [self.__player.stop_moving_right],
+            arcade.key.A: [self.__player.stop_moving_left],
         }

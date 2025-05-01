@@ -16,7 +16,7 @@ class Blob(Pawn):
     def on_hit(self, target: Pawn) -> None:
         if not isinstance(target, Player):
             return
-        if not target.is_invincible:
-            target.take_damage(self._damage)
-            target.change_y = 15
+        if not pawn.is_invincible:
+            pawn.take_damage(self._damage)
+            pawn.change_y = 10
 

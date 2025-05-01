@@ -4,7 +4,11 @@ from MapSystem.MapLoader import MapLoader, MapData
 from MapSystem.MapValidator import MapValidator
 from TileSystem.TileFactory import TileFactory
 from TileSystem.Tile import *
+<<<<<<< HEAD
 from GameObjects.Player import Player
+=======
+from GameObjects.Pawn import Player
+>>>>>>> 56eb9ecb8e7cbe85daeee55129d4e62ef5beafb0
 
 class GameScene(arcade.Scene):
     '''
@@ -17,7 +21,10 @@ class GameScene(arcade.Scene):
         '''Initialise les listes et charge la carte avec file_path'''
         super().__init__()
         self.add_sprite_list(Category.WALL.value, use_spatial_hash=True)
+<<<<<<< HEAD
         self.add_sprite_list(Category.PLATFORM.value, use_spatial_hash=False)
+=======
+>>>>>>> 56eb9ecb8e7cbe85daeee55129d4e62ef5beafb0
         self.add_sprite_list(Category.LADDER.value, use_spatial_hash=True)
         self.add_sprite_list(Category.INTERACTABLE.value, use_spatial_hash=True)
         self.add_sprite_list(Category.PAWN.value, use_spatial_hash=False)
@@ -71,8 +78,11 @@ class GameScene(arcade.Scene):
     @property
     def walls(self) -> arcade.SpriteList: return self.get_sprite_list(Category.WALL.value)
     @property
+<<<<<<< HEAD
     def platforms(self) -> arcade.SpriteList: return self.get_sprite_list(Category.PLATFORM.value)
     @property
+=======
+>>>>>>> 56eb9ecb8e7cbe85daeee55129d4e62ef5beafb0
     def ladders(self) -> arcade.SpriteList: return self.get_sprite_list(Category.LADDER.value)
     @property 
     def interactables(self) -> arcade.SpriteList: return self.get_sprite_list(Category.INTERACTABLE.value)
