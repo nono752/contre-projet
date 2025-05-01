@@ -24,7 +24,7 @@ class GameView(arcade.View): ## devrait etre un listener
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
         # Setup our game
-        self.setup("maps/default.txt")
+        self.setup("maps/map1.yaml")
 
         # Init camera
         self.camera = arcade.camera.Camera2D()

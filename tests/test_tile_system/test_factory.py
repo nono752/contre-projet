@@ -7,7 +7,7 @@ from GameObjects.Player import Player
 def test_create_map_tiles() -> None:
     factory = TileFactory()
     loader = MapLoader()
-    data = loader.load_from_file("tests/test_tile_system/maps/test_creation.txt") # pas de verif le fichier est valide
+    data = loader.load_from_file("tests/test_tile_system/maps/test_creation.yaml") # suppose que le fichier est valide
 
     tiles = factory.create_map_tiles(data)
     assert len(tiles) == 13

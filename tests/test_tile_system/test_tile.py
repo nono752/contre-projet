@@ -1,6 +1,6 @@
 from TileSystem.Tile import *
 
-## peut-etre se complexifie plus tard
+## peut-etre se complexifie plus tard sinon enlever
 def test_init() -> None:
     tile = Tile(
         path_or_texture=None, 
